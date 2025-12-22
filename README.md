@@ -1,7 +1,7 @@
 # Flood_Threat_CSCP
 Flood_Threat_CSCP implements an actively coupled sensing and planning (CSCP) framework for flood-threat navigation. The framework models spatiotemporal flood threat dynamics using a Koopman operator–based linear representation, enabling data-driven prediction of evolving flood risk. Sensor placement is optimized by maximizing a novel context relevant mutual information (CRMI) measure that ensures information-rich observations, while path planning and sensor reconfiguration are performed simultaneously. The approach supports uncertainty-aware navigation in large-scale flood environments.
 
-#Description of each folder
+# Description of each folder
 
 **@ACEGridWorld**
 
