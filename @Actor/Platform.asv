@@ -1,0 +1,120 @@
+%{
+SOFTWARE LICENSE
+----------------
+Copyright (c) 2023 by 
+	Raghvendra V Cowlagi
+	Bejamin Cooper
+	Prakash Poudel
+
+Permission is hereby granted to any person obtaining a copy of this
+software and associated documentation files (the "Software"), to deal in
+the Software, including the rights to use, copy, modify, merge, copies of
+the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:  
+
+* The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+* The Software, and its copies or modifications, may not be distributed,
+published, or sold for profit. 
+* The Software, and any substantial portion thereof, may not be copied or
+modified for commercial or for-profit use.
+
+The software is provided "as is", without warranty of any kind, express or
+implied, including but not limited to the warranties of merchantability,
+fitness for a particular purpose and noninfringement. In no event shall the
+authors or copyright holders be liable for any claim, damages or other
+liability, whether in an action of contract, tort or otherwise, arising
+from, out of or in connection with the software or the use or other
+dealings in the software.      
+
+
+PROGRAM DESCRIPTION
+-------------------
+Class definition of platform (actor and sensor motion).
+%}
+
+classdef Platform
+	properties
+        Position
+        Velocity
+        Heading
+        actualPath
+        expectedPath
+        currentEdge
+        totalExposure
+        isSensor	
+
+		% Link to a grid world, threat, and sensor network
+		ACEGridWorld_
+        threatModel_
+        sensorNetwork_
+
+      
+       
+	end
+
+	methods
+		%==================================================================
+        function obj = Platform( speed, threat_, grid_, sensorNetwork_, time_step_)
+            obj.Heading          = [obj.Heading, findHeading(obj, currentEdge_)];
+            obj.Velocity		 = [obj.Velocity, [cos(obj.Heading);sin(obj.Heading)]*speed];
+            obj.Position		 = [obj.Position, obj.Position(end) + obj.Velocity(end)*time_step_];
+            obj.totalExposure    = obj.totalExposure + threatPath(obj, threat_);
+            %obj.actualPath      = [obj.actualPath, ]
+              if obj.isSensor         
+                 obj.expectedPath    = grid_.optimalPath;
+              else
+                 obj.expectedPath    = [sensorNetwork_.configHistory(end-1), sensorNetwork_.configHistory(end)];
+              end
+        end
+
+            function heading_     = findHeading(obj, currentEdge_)
+            obj.currentEdge       = currentEdge_;
+            heading_              = atan2(grid_.coordinates(2, obj.currentEdge(2)) - grid_.coordinates(2, obj.currentEdge(1)),...
+                                    grid_.coordinates(1, obj.currentEdge(2)) - grid_.coordinates(1, obj.currentEdge(1)));
+			end
+            
+             
+           function c_path_integral = threatPath(obj, threat_)
+			% Initialization
+            priorLocation           = obj.Position(end -1);
+            nextLocation            = obj.Position(end);
+            intermediatePath_x      = linspace( priorLocation(1), nextLocation(1), 5);
+            intermediatePath_y      = linspace( priorLocation(2), nextLocation(2), 5);
+            intermediatePath        = [intermediatePath_x; intermediatePath_y];
+            threat_intermediatePath = threat_.calculate_at_locations(obj, intermediatePath);
+            tempPath                = linspace( 0, 1 , 5);
+            threatfit               = polyfit(tempPath, threat_intermediatePath, 4);
+            integrated_polynomial   = polyint(threatfit);
+            c_path_integral         = polyval(integrated_polynomial, 1) - polyval(integrated_polynomial, 0)/norm(nextLocation, priorLocation);
+            end
+
+            function sensor_ = checkreachedVertex(ID,sensor, threat_, grid_, sensor_, time_step_, totalSensors)
+
+                            
+                
+                measurementz_k       =  threat_.calculate_at_locations( ...
+	                                      grid_.coordinates(:, sensor_.configuration) ) ...
+                                          + sqrt(sensor_.noiseVariance) * randn( sensor_.nSensors, 1);
+
+                  threat_              = threat_.estimate_state_UKF1(time_step_, measurementz_k, sensor_, optimalPath_);
+%                   threatStateHat_k    = threat_.stateEstimate;
+%                   pathPnext = threat_.pNextHist;
+                  grid_.threatModel    = threat_;
+                  grid_.sensorNetwork  = sensor_;
+                  grid_                = grid_.min_cost_path(threat_, grid_);
+                  optimalPath_         = grid_.optimalPath.loc;
+                  sensor_.threatModel  = threat_;
+                  sensor_.gridWorld    = grid_;
+
+                  gridcoordinateslist = 1:grid_.nPoints;
+                  gridcoordinateslist(ismember(1:grid_.nPoints, [sensor.configuration])) = [];
+
+                  sensor_			   = sensor_.configure_greedy_cost(threat_, gridcoordinateslist,grid_,optimalPath_,time_step_);       
+                  
+               
+               
+            end
+
+      end
+ end
