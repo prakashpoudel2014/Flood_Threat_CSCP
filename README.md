@@ -1,8 +1,8 @@
 # Flood_Threat_CSCP
 Flood_Threat_CSCP implements an actively coupled sensing and planning (CSCP) framework for flood-threat navigation. The framework models spatiotemporal flood threat dynamics using a Koopman operator–based linear representation, enabling data-driven prediction of evolving flood risk. Sensor placement is optimized by maximizing a novel context relevant mutual information (CRMI) measure that ensures information-rich observations, while path planning and sensor reconfiguration are performed simultaneously. The approach supports uncertainty-aware navigation in large-scale flood environments.
 
-Description of each folder
-@ACEGridWorld
+#Description of each folder#
+**@ACEGridWorld**
 
 Defines the grid world with uniform spacing and 8-adjacency connectivity.
 
@@ -12,7 +12,7 @@ Provides visualizations of the workspace, including true and estimated threat fi
 
 Interacts with: FloodThreat class to obtain threat-related costs, SensorNetworkV01 class to determine optimal sensor placements
 
-@FloodThreat
+**@FloodThreat**
 
 Defines the flood threat field using the Koopam method. The flood data is obtained from real flooding scenario (2017 Hurricane Harvey Flood).
 
@@ -22,7 +22,7 @@ Provides plotting tools for true and estimated threats.
 
 Interacts with: ACEGridWorld to define threat cost at grid locations.
 
-@SensorNetworkV01
+**@SensorNetworkV01**
 
 Defines the sensor network model.
 
@@ -30,7 +30,7 @@ Implements sensor placement strategies, including greedy selection based on Mutu
 
 Interacts with: FloodThreat to receive threat estimate, ACEGridWorld to account for path-dependent sensing.
 
-@Platform
+**@Platform**
 
 Base class defining motion primitives for mobile agents.
 
@@ -38,7 +38,7 @@ Encapsulates shared properties such as position, velocity, heading, and trajecto
 
 Provides a common interface for both actors and sensors.
 
-@Sensor
+**@Sensor**
 
 Implements mobile sensor behavior derived from Platform.
 
@@ -52,7 +52,7 @@ SensorNetworkV01 for adaptive sensor placement.
 
 ACEGridWorld for updated threat-aware path planning.
 
-@Actor
+**@Actor**
 
 Represents the primary navigating agent (e.g., vehicle).
 
@@ -66,7 +66,7 @@ ACEGridWorld for path planning
 
 FloodThreat for threat-aware cost evaluation
 
-cscp_v03
+**cscp_v03**
 
 Main driver script to run the ACSCP algorithm.
 
