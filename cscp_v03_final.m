@@ -52,9 +52,9 @@ time_step_		= 0.5; % time step interval for main loop (10 Hz)
 N_SENSORS		= 2;
 
 N_GRID_ROW		= 25;
-% SENSOR_INIT_CONFIG = [2*N_GRID_ROW+1, 3]; % start sensors next to actor
- SENSOR_INIT_CONFIG = [40, 6];
+SENSOR_INIT_CONFIG = [40, 6];
 %  SENSOR_INIT_CONFIG = 40;
+
 %----- Other
 SENSOR_NOISE_VAR = 0.001;	% Variance of (i.i.d.) measurement noise in each sensor, assuming homogeneous sensors
 SENSOR_SPEED = 0.02; % distance/timestep
@@ -89,7 +89,6 @@ end
 %% Active CSCP Loop
 tic
 index = [2 8 15 21];
-%  index = [15 16 17 18 19 20 21];
 previousPathLength = 0;  % Initialize a variable to track previous path length
 plotTriggered = false(size(index));  % Logical array to track which indices have been plotted
 while not(actor_.actualPath(end) == (grid_.nGridRow *2 ) - 6)
@@ -170,19 +169,4 @@ ylabel('Estimation error');
 title('Relative error over sensor iterations');
 
 
-% flags_.SHOW_TRUE	 = true;
-% flags_.SHOW_ESTIMATE = true;
-% threatStatePlotAxes  = threat_.plot_(grid_, flags_);
-% flags_.SHOW_TRUE	 = true;
-% flags_.SHOW_ESTIMATE = false;
-% flags_.DUAL_SCREEN	 = false;
-% flags_.JUXTAPOSE	 = true;
-% flags_.SHOW_PATH     = true;
-% flags_.SHOW_SENSOR_LOCATION  = true;
-% grid_.plot_parametric(threat_, sensorNetwork_, flags_)
-% grid_.plot_grid_elements(threat_,grid_, sensorNetwork_, flags_)
-% 
-% flags_.SHOW_TRUECOST	 = true;
-% flags_.SHOW_ESTIMATECOST = true;
-% pathCostPlotAxes  = sensorNetwork_.plotCost_(flags_);
 
