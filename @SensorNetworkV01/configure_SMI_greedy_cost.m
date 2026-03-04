@@ -110,11 +110,10 @@ function obj = configure_SMI_greedy_cost(obj, threat_, list, grid_)
         distance_array(:,2) = gamma*distance_array1(:,2) + beta*distance_array2(:,2);
 
     end
-%     currentMIList_array1
-    % ---- normalize as in your formula ----
+	
     alpha = max(currentMIList_array1(:,2)) / ...
             (max(distance_array(:,2)) - min(distance_array(:,2)));
-       alpha = 0;
+    %   alpha = 0;
     mod_MI = currentMIList_array1;
     mod_MI(:,2) = mod_MI(:,2) + alpha * (min(distance_array(:,2)) - distance_array(:,2));
 
@@ -123,3 +122,4 @@ function obj = configure_SMI_greedy_cost(obj, threat_, list, grid_)
     obj.configuration = mod_MI(IND_,1);
 
 end
+
