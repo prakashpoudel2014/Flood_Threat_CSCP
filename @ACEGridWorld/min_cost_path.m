@@ -75,8 +75,6 @@ while (nFringe ~= 0) && (~isGoalClosed)
 	fringe_(1, :) = [];
     
 	[nhbrIDs, nhbrCosts] = obj.find_neighbours(obj.searchOutcome(vCurrent).id, threat_, grid_);				% Other function handle for nhbrs and costs
-
-% 	fprintf('\n-- Iteration: %i \n', nIter)
 	
 	for k = 1:numel(nhbrIDs)													% For all neighbours
 
@@ -93,10 +91,6 @@ while (nFringe ~= 0) && (~isGoalClosed)
 			knownIDs(vNew)	= nhbrIDs(k);	
 		end
 		costNew	= nhbrCosts(k);												% Cost to go from act to new
-
-% 		disp([k vCurrent vNew])
-% 		fprintf('\n-- Known IDs --\n')
-% 		disp((knownIDs(1:nKnownIDs))')
 		
 		if obj.searchOutcome(vNew).mk == 0											% Unvisited
 			obj.searchOutcome(vNew).mk	= 1;										% Mark open
@@ -156,9 +150,6 @@ obj.optimalPath.time= pathPointsInTime;
 obj.optimalPath.Cost= obj.searchOutcome(vGoal).d;
 obj.pathCost		= obj.searchOutcome(vGoal).d;
 obj.pathRisk		= 0;
-% obj.pathCost	= 1;
-% obj.pathRisk	= 2;
-
 
 	%======================================================================
 	function fringe_binary_sort(B)
@@ -222,4 +213,5 @@ obj.pathRisk		= 0;
 
 
 end
+
 
