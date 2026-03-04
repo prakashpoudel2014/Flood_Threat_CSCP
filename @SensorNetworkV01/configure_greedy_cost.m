@@ -76,10 +76,8 @@ function obj = configure_greedy_cost(obj,threat_,list, grid_, optimalPath)
         for k = 1:pathLength
             psi  = threat_.compute_psi( x, y, grid_.coordinates(1, optimalPath(:,k)),  grid_.coordinates(2, optimalPath(:,k)));
             Pk   = pReducedNextHist(:,:,k);
-            % Weighted by step length ds(k)
             sumVec  = sumVec  + ds(k) * psi * Pk;          % 1×n
             sum1    = sum1    + (ds(k)^2) * psi * Pk * psi';
-            % Path cost contributions
             obj.truepathCost      = obj.truepathCost      + ds(k) * (psi * threat_.originalState);
             obj.estimatedpathCost = obj.estimatedpathCost + ds(k) * (psi * threat_.originalStateEstimate);
         end
@@ -97,8 +95,7 @@ function obj = configure_greedy_cost(obj,threat_,list, grid_, optimalPath)
         tau             = sumVec * H_prime';           
         obj.varpathCost = (sum1 + 2*sum2);              
         Xi = H * pNext * H' + obj.noiseVariance;        
-
-        % Add "1" along the path weighted by geometric length
+		
         obj.truepathCost      =  obj.truepathCost;
         obj.estimatedpathCost =  obj.estimatedpathCost;
         obj.pathRisk          =  obj.estimatedpathCost + sqrt(obj.varpathCost);
@@ -139,11 +136,11 @@ function obj = configure_greedy_cost(obj,threat_,list, grid_, optimalPath)
     end
 
     %----------------------------------------------------------------------
-    % Reconfiguration weighting (unchanged; α is then set to 0 as before)
+    % Reconfiguration weighting 
     %----------------------------------------------------------------------
     alpha = max(currentMIList_array1(:, 2)) / ...
            (max(distance_array(:, 2)) - min(distance_array(:, 2)));
-     alpha = 0;
+  %   alpha = 0;
 
     mod_MI      = currentMIList_array1;
     mod_MI(:,2) = mod_MI(:,2) + alpha * (min(distance_array(:, 2)) - distance_array(:, 2));
