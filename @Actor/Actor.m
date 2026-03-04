@@ -35,25 +35,11 @@ Class definition of platform (actor and sensor motion).
 
 classdef Actor < Platform
 	properties
-%         Position
-%         Velocity
-%         Heading
-%         actualPath
-%         expectedPath
-%         currentEdge
-%         totalExposure
-%         isSensor	
-
-		% Link to a grid world, threat, and sensor network
-% 		ACEGridWorld_
-%         threatModel_
-%         sensorNetwork_
-
+	
       edgeDistance
       totalExposure
       actorstateEstimate
       actorstateEstimateHistory
-%       travelDiatance
        
 	end
 
@@ -131,4 +117,5 @@ classdef Actor < Platform
             end
 
       end
+
  end
