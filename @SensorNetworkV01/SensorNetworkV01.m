@@ -115,16 +115,6 @@ classdef SensorNetworkV01
 		% Sensor configuration implemented in a different file
 		%------------------------------------------------------------------
 
-%         %==================================================================
-% 		obj = configure_greedy_cost(obj,threat_, grid_, optimalPath, timestep)
-%         % Sensor configuration implemented in a different file
-% 		%------------------------------------------------------------------
-        
-%         %==================================================================
-% 		obj = configure_random(obj,threat_, grid_, optimalPath, timestep)
-%         % Sensor configuration implemented in a different file
-% 		%------------------------------------------------------------------
-
         %==================================================================
 		obj = MI_optimization(obj,threat_, grid_, optimalPath, timestep)
 		% MI optimizataion implemented in a different file
@@ -136,4 +126,5 @@ classdef SensorNetworkV01
 		%------------------------------------------------------------------
 	end
 end
+
 
