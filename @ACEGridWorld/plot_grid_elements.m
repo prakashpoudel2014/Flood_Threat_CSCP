@@ -44,13 +44,6 @@ if flags_.SHOW_TRUE
 	xlim(1*[-obj.halfWorkspaceSize, obj.halfWorkspaceSize]); 
 	ylim(1*[-obj.halfWorkspaceSize, 1*obj.halfWorkspaceSize]);
 	zlim(imageClims);
-    
-	
-% 	timeText = ['$t = $ ' num2str(0) ' units'];
-% 	grHdlTimeText	= text(axisTrue, ...
-% 		-0.98*obj.halfWorkspaceSize, 1.1*obj.halfWorkspaceSize, 2*imageMax, timeText, ...
-% 		'Color', 'k', 'FontName', 'Times New Roman', ...
-% 		'FontSize', 12, 'Interpreter','latex');
 
 %----- Plot grid
 	plot3(...
@@ -82,12 +75,7 @@ if flags_.SHOW_TRUE
 		threat_.basisCenter(1, :), threat_.basisCenter(2, :), ...
 		imageMax*ones(1, size(threat_.basisCenter, 2)), ...
 		'.', 'Color', 'k', 'MarkerSize', 15);
-% 	for m2 = 1:threat_.nStates
-% 		text(axisTrue, ...
-% 			(threat_.basisCenter(1, m2)- 0.05), (threat_.basisCenter(2, m2) + 0.10), ...
-% 			2*imageMax, num2str(m2), 'Color', 'k', 'FontName', 'Times New Roman', ...
-% 			'FontSize', 12, 'Interpreter','latex')
-% 	end
+
 	drawnow();
 
      for m1 = 1:length(threat_.timeStampState)
@@ -98,72 +86,7 @@ if flags_.SHOW_TRUE
 			locationsMesh);
 		surfc(axisTrue, xMesh, yMesh, threatMesh,'LineStyle','none');
 
-% 		timeText = ['$t = $ ' num2str(threat_.timeStampState(m1)) ' units'];
-% 		grHdlTimeText	= text(axisTrue, ...
-% 			-0.98*obj.halfWorkspaceSize, 1.1*obj.halfWorkspaceSize, 2*imageMax, timeText, ...
-% 			'Color', 'k', 'FontName', 'Times New Roman', ...
-% 			'FontSize', 12, 'Interpreter','latex');
-
 	    drawnow();
     end
 end
- %% CRMI surface plot
-
-% if flags_.SHOW_TRUE
-% xPlot		= linspace(-obj.halfWorkspaceSize, obj.halfWorkspaceSize, 11);
-% yPlot		= linspace(-obj.halfWorkspaceSize, obj.halfWorkspaceSize, 11);
-% [x_Mesh, y_Mesh]	= meshgrid(xPlot, yPlot);
-% x_Mesh = flip((x_Mesh));
-% y_Mesh = flip((y_Mesh));
-%  CRMI_mesh = flip((reshape(sensor_.allConf_MI1(:,2), [sqrt(obj.nPoints), sqrt(obj.nPoints)]))');
-%  shading interp;
-%  imageMax	= max(CRMI_mesh(:));
-%  imageMin	= min(CRMI_mesh(:));
-%  imageClims	= [imageMin imageMax];
-% 
-%  figure;
-% surf(x_Mesh, y_Mesh, CRMI_mesh);
-% 
-% % Customize the plot
-% shading interp;  % Interpolate colors for a smooth appearance
-% colorbar;       % Add a color bar to show the values
-% % zlabel('CRMI Values');
-% % title('Surface Plot of CRMI Values in 2D Grid Space');
-% view(2);        % 2D view
-% axis equal tight; 
-% 
-% % Remove numbering in x and y axes
-% set(gca, 'xtick', []);
-% set(gca, 'ytick', []);
-% % Optional: Set axis limits based on your data range
-% xlim([min(x_Mesh(:)), max(x_Mesh(:))]);
-% ylim([min(y_Mesh(:)), max(y_Mesh(:))]);
-% 
-% % Optional: Customize colormap
-%  colormap('gray');  % You can choose other colormaps
-% 
-% % Optional: Rotate the view for a different perspective
-% % view(3);
-% 
-% hold on;
-% 
-% % Plot grid points
-% plot3(obj.coordinates(1, :), obj.coordinates(2, :), imageMax * ones(1, size(obj.coordinates, 2)), '.', 'Color', 'w', 'MarkerSize', 20);
-% 
-% % Plot grid labels
-% for m2 = 1:grid_.nGridRow^2
-%     text(...
-%         (grid_.coordinates(1, m2) - 0.05), (grid_.coordinates(2, m2) + 0.10), ...
-%         2 * imageMax, num2str(m2), 'Color', 'r', 'FontName', 'Times New Roman', ...
-%         'FontSize', 12, 'Interpreter', 'latex');
-% end
-% 
-% if flags_.SHOW_SENSOR_LOCATION
-% 			    plot3(...
-% 				obj.coordinates(1, sensor_.configHistory(:,end)), ...
-% 				obj.coordinates(2, sensor_.configHistory(:,end)), ...
-% 				imageMax*ones(1,sensor_.nSensors), ...
-% 				'o', 'Color', 'r', 'MarkerSize', 20, 'LineWidth', 1.5);
-% end
-% hold off;
-% end
+ 
