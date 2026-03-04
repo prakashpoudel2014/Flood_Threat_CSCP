@@ -46,7 +46,6 @@ classdef FloodThreat
         zRange
         zMin
         threatCoordinates  =[];    % (x,y) in catersian coordinates normalized between [-1,1]
-%         threatIntensity  =[];   % threat value at (x,y)
         originalStateEstimate
 		stateEstimate		% mean state estimate
         estimateError
@@ -60,6 +59,7 @@ classdef FloodThreat
         pReducedNextHist    % reduced covariance prediction for all path_length iterations
         pathLength
         priorCovariance
+		
 		% Maintain histories of state and stateEstimate evolution
 		stateHistory
 		stateEstimateHistory		% mean state estimate
@@ -86,7 +86,6 @@ classdef FloodThreat
 	methods
 		%==================================================================
         function obj = FloodThreat(grid_,data_,input_data_)		
-%             data       = readtable('Flood_Height_Data_meters.xlsx');
 %             Convert to numeric if data_ is a cell array
             if iscell(data_)
                 data_ = cell2mat(data_);
@@ -97,7 +96,7 @@ classdef FloodThreat
             x_or       = data_(1,:);
             y_or       = data_(2,:);
             z_all_raw  = data_(600:1400,:);
-%             obj.originalState = z_all_raw(1,:);
+
             % Normalize spatial coordinates to [-1, 1]
             x_ = 2 * (x_or - min(x_or)) / (max(x_or) - min(x_or)) - 1;
             y_ = 2 * (y_or - min(y_or)) / (max(y_or) - min(y_or)) - 1;
@@ -105,21 +104,12 @@ classdef FloodThreat
             y_ = y_(:);
             obj.threatCoordinates = [x_,y_]';
             
-          
             n_points = numel(x_);
-% 
             n_times  = size(z_all_raw,1);
-%             % Normalize flood
-%             obj.zMin   = min(z_all_raw,[],1);
-%             z_max   = max(z_all_raw,[],1);
-%             obj.zRange = z_max - obj.zMin;
-%             obj.zRange(obj.zRange==0) = 1;       
-%             z_ = (z_all_raw - obj.zMin) ./ obj.zRange;  % in [0,1]
             z_   = z_all_raw;
             obj.floodHeight = z_;
-            % Input rainfall
-%             input_data = readtable('normalized_rainfall_data.xlsx');
-            
+			
+            % Input rainfall            
             if iscell(input_data_)
                 input_data_ = cell2mat(input_data_);
             elseif istable(input_data_)
@@ -148,12 +138,11 @@ classdef FloodThreat
                         t_norm_vec(t) * ones(n_points,1) ...
                     ];
                 end
-        
+				
             %  Snapshot Matrices
             X       = reshape(observables(:,:,1:end-1), [], n_times-1);   % [n_obs x (T-1)]
             Y       = reshape(observables(:,:,2:end),   [], n_times-1);   % [n_obs x (T-1)]
             Upsilon = u_(:,1:end-1);                                   % [n_inputs x (T-1)]
-        
             n_obs = size(X,1);
         
             %  Extended DMD
@@ -186,22 +175,14 @@ classdef FloodThreat
             B = U_hat * B_tilde;            % [n_obs x n_inputs]
             obj.A = A;
             obj.B = B;
-%             obj.normalizedState = X(:,1);
-%             obj.state = obj.normalizedState;
-%             obj.nStates = length(obj.state);
-%             idx = 1:n_points;  
-%             obj.state(idx) = obj.normalizedState(idx).*obj.zRange' + obj.zMin';
             obj.state       =  X(:,1);
             obj.nStates = length(obj.state);
             obj.originalState  = obj.state(1:n_points);
-%             obj.originalState = obj.state(1:length(obj.originalState),1);
 			obj.noiseCovarQ = 0.001*diag( ones(obj.nStates	, 1) );
 			obj.ACEGridWorld_  = grid_;
-%             obj.normalizedStateEstimate = zeros(obj.nStates, 1);
 			obj.stateEstimate	 = zeros(obj.nStates, 1);
-%             obj.stateEstimate(idx) = obj.normalizedStateEstimate(idx) .* obj.zRange' + obj.zMin';
             obj.originalStateEstimate	 = obj.stateEstimate(1:n_points);
- 			obj.estimateCovarPxx = 1 * eye(obj.nStates	);
+ 			obj.estimateCovarPxx = 1 * eye(obj.nStates);
             obj.traceCovarPxx    = zeros(1,1);
 
 			obj.stateHistory			 = obj.state;
@@ -219,30 +200,6 @@ classdef FloodThreat
 
 		end
 		%---------------------------------------
-        % ---------------------------
-
-% 		%==================================================================
-%         function c_grid_ = calculate_at_grid_location(obj, locations_, thisState)
-%             % locations_: [2 x Nq] for Nq query points
-%         
-%             x = obj.threatCoordinates(1,:);
-%             y = obj.threatCoordinates(2,:);
-%         
-%             if nargin < 3 || isempty(thisState)
-%                 thisState = obj.originalState;
-%             end
-%         
-%             Nq = size(locations_, 2);
-%             c_grid_ = zeros(1, Nq);
-%         
-%             for i = 1:Nq
-%                 xq = locations_(1,i);
-%                 yq = locations_(2,i);
-%                 Psi = obj.compute_psi(x, y, xq, yq);
-%                 c_grid_(i) = Psi * thisState(:);
-%             end
-%         end
-%         %------------------------------------------------------------------
         
         %==================================================================
         function c_grid_ = calculate_at_grid_location(obj, locations_, thisState)
@@ -285,8 +242,6 @@ classdef FloodThreat
                 xq = locationsFlatnd(1, i);
                 yq = locationsFlatnd(2, i);
                 Psi = obj.compute_psi(x, y, xq, yq);
-%                 disp(size(Psi))
-%                 disp(size(thisState(:)))
                 c_grid_(i) = Psi * thisState(:);
             end
         
@@ -298,7 +253,6 @@ classdef FloodThreat
             end
         end
         %------------------------------------------------------------------
-
 
         %==================================================================
         function c_ = calculate_at_sensor_locations(obj, locations_, thisState)
@@ -322,11 +276,6 @@ classdef FloodThreat
             k_ =  length(obj.timeStampState);
             u_ = obj.input(:, k_);		
             obj.state = obj.A* obj.state + obj.B*u_;
-%             obj.normalizedState = obj.A* obj.normalizedState + obj.B*u_;
-%             obj.state = obj.normalizedState;
-%             n_points = length(obj.zMin);    
-%             idx = 1:n_points;
-%             obj.state(idx) = obj.normalizedState(idx) .* obj.zRange' + obj.zMin';
             obj.originalState = obj.state(1:length(obj.originalState));
 			obj.stateHistory	= [obj.stateHistory		obj.state];
 			obj.timeStampState	= [obj.timeStampState	t_ + time_step_];
@@ -467,14 +416,10 @@ classdef FloodThreat
         end
 
 
-
-
 		%==================================================================
 		obj = estimate_state_UKF(obj, time_step_, measurementz_k, sensors_)
 		% Estimator in a separate file
-		%------------------------------------------------------------------
-
-       
+		%------------------------------------------------------------------      
 
         %==================================================================
 		obj = estimate_state_UKF1(obj, time_step_, measurementz_k, sensors_, optimalPath, controlu_k)
@@ -491,4 +436,5 @@ classdef FloodThreat
 		% State and estimate plots in a different file
 		%------------------------------------------------------------------
 	end
+
 end
