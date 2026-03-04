@@ -27,7 +27,7 @@ Interacts with: ACEGridWorld to define threat cost at grid locations.
 
 Defines the sensor network model.
 
-Implements sensor placement strategies, including greedy selection based on Mutual Information (MI).
+Implements sensor placement strategies, including greedy selection based on Standrad Mutual Information (SMI), Context Relevant mutual Information (CRMI) and random sensor placement.
 
 Interacts with: FloodThreat to receive threat estimate, ACEGridWorld to account for path-dependent sensing.
 
