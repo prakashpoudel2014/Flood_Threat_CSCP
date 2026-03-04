@@ -28,66 +28,9 @@ dealings in the software.
 
 PROGRAM DESCRIPTION
 -------------------
-4-adjacency grid neighbours on a uniform grid. Time is updated but there
+8-adjacency grid neighbours on a uniform grid. Time is updated but there
 are no "waiting" neighbours.
 %}
-
-% function [nhbrIDs, nhbrCosts] = grid_neighbours_without_wait(obj, currentID, threat_, grid_)
-% 
-% 
-% nhbrIDs		= [];
-% nhbrCosts	= [];
-% x = threat_.threatCoordinates(1,:);
-% y = threat_.threatCoordinates(2,:);
-% 
-% % ID = number of spatial grid points * time samples elapsed + current grid
-% % point number
-% 
-% pointInGrid = mod(currentID, obj.nPoints);
-% if pointInGrid == 0, pointInGrid = obj.nPoints; end
-% pointinTime = floor( (currentID - pointInGrid) / obj.nPoints );
-% 
-% if mod( pointInGrid, obj.nGridRow )
-% 	% pointInGrid + 1 is a neighbour
-% 	newNeighbour= (pointInGrid + 1) + obj.nPoints * (pointinTime + 1);
-%     newCost		= 1 + threat_.compute_psi(x, y, grid_.coordinates(1, pointInGrid + 1), grid_.coordinates(2, pointInGrid + 1))* obj.threatModel.originalStateEstimate;
-% 	nhbrIDs		= [nhbrIDs; newNeighbour];
-% 	nhbrCosts	= [nhbrCosts; newCost];
-%   
-% end
-% if mod( pointInGrid - 1, obj.nGridRow )
-%     % pointInGrid - 1 is a neighbour
-%  	newNeighbour= (pointInGrid - 1) + obj.nPoints * (pointinTime + 1);
-%     newCost		= 1 + threat_.compute_psi(x, y, grid_.coordinates(1, pointInGrid - 1), grid_.coordinates(2, pointInGrid - 1))* obj.threatModel.originalStateEstimate;
-% 	nhbrIDs		= [nhbrIDs; newNeighbour];
-% 	nhbrCosts	= [nhbrCosts; newCost];
-% end
-% 
-% if pointInGrid + obj.nGridRow <= obj.nPoints
-% 	% pointInGrid + obj.nGridRow is a neighbour
-%  	newNeighbour= (pointInGrid + obj.nGridRow) + obj.nPoints * (pointinTime + 1);
-%     newCost		= 1 +threat_.compute_psi(x, y, grid_.coordinates(1, pointInGrid + obj.nGridRow), grid_.coordinates(2, pointInGrid + obj.nGridRow))* obj.threatModel.originalStateEstimate;
-% 	nhbrIDs		= [nhbrIDs; newNeighbour];
-% 	nhbrCosts	= [nhbrCosts; newCost];
-% end
-% 
-% if pointInGrid - obj.nGridRow >= 1
-% 	% pointInGrid - obj.nGridRow is a neighbour
-%  	newNeighbour= (pointInGrid - obj.nGridRow) + obj.nPoints * (pointinTime + 1);
-%     newCost		= 1 + threat_.compute_psi(x, y, grid_.coordinates(1, pointInGrid - obj.nGridRow), grid_.coordinates(2, pointInGrid - obj.nGridRow))* obj.threatModel.originalStateEstimate;
-% 	nhbrIDs		= [nhbrIDs; newNeighbour];
-% 	nhbrCosts	= [nhbrCosts; newCost];
-% end
-% 
-% if pointInGrid == obj.searchSetup.locationGoal
-% 	newNeighbour= obj.searchSetup.virtualGoalID;
-% 	newCost		= 0;
-% 	nhbrIDs		= [nhbrIDs; newNeighbour];
-% 	nhbrCosts	= [nhbrCosts; newCost];
-% end
-% 
-% 
-% end
 
 function [nhbrIDs, nhbrCosts] = grid_neighbours_without_wait(obj, currentID, threat_, grid_)
 
@@ -138,3 +81,4 @@ if pointInGrid == obj.searchSetup.locationGoal
 end
 
 end
+
