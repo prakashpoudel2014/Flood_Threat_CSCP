@@ -32,7 +32,7 @@ PROGRAM DESCRIPTION
 -------------------
 Class definition of grid world, including optimal (minimum threat) planning.
 	* Uniform spacing
-	* 4-adjacency
+	* 8-adjacency
 	* Works with ParametricThreat class to get threat costs
 %}
 
@@ -48,7 +48,6 @@ classdef ACEGridWorld
 		adjacency			% xy adjacency matrix
 
 		optimalPath
-%         pathLength
 		pathCost
 		pathRisk
         varpathCost
@@ -77,28 +76,6 @@ classdef ACEGridWorld
 					-halfWorkspaceSize_ + (mod(m1, nGridRow_)) * obj.spacing; ...
 					-halfWorkspaceSize_ + floor(m1 / nGridRow_) * obj.spacing];
 			end
-
-% 			% Setup adjacency matrix
-% 			nEdges		= 0;
-% 			nExpEdges	= obj.nPoints * 4;
-% 			edgeList	= zeros(nExpEdges, 3);
-% 			for m1 = 1:obj.nPoints
-% 				if (m1 + 1 <= obj.nPoints) && (mod(m1, nGridRow_) ~= 0)
-% 					nEdges				= nEdges + 1;
-% 					edgeList(nEdges, :) = [m1 (m1 + 1) 1];
-% 					nEdges				= nEdges + 1;
-% 					edgeList(nEdges, :) = [(m1 + 1) m1 1];
-% 				end
-% 			
-% 				if (m1 + nGridRow_) <= obj.nPoints
-% 					nEdges				= nEdges + 1;
-% 					edgeList(nEdges, :) = [m1 (m1 + nGridRow_) 1];
-% 					nEdges				= nEdges + 1;
-% 					edgeList(nEdges, :) = [(m1 + nGridRow_) m1 1];
-% 				end
-% 			end
-% 			obj.adjacency = sparse(edgeList(1:nEdges, 1), ...
-% 				edgeList(1:nEdges, 2), edgeList(1:nEdges, 3));
             
             % Setup adjacency matrix (8-way connectivity)
             nEdges     = 0;
@@ -154,18 +131,10 @@ classdef ACEGridWorld
 
 
             obj.optimalPath = [];
-% 			obj.optimalPath = [1:nGridRow_,2*nGridRow_:nGridRow_:obj.nPoints];
 			obj.pathCost	= Inf;
 			obj.pathRisk	= Inf;
-% 
-% 			obj.searchSetup.start			= obj.nGridRow;
-% 			obj.searchSetup.locationGoal	= obj.nPoints -(obj.nGridRow -1);
-%             obj.searchSetup.start			= 1;
-% 			obj.searchSetup.locationGoal	= obj.nPoints;
             obj.searchSetup.start			= (obj.nGridRow *obj.nGridRow - 5 *obj.nGridRow) - 6 ;
 			obj.searchSetup.locationGoal	= (obj.nGridRow *2 ) - 6;
-%             obj.searchSetup.start			= (obj.nGridRow *obj.nGridRow - 9 *obj.nGridRow) - 3 ;
-% 			obj.searchSetup.locationGoal	= (obj.nGridRow *2 ) - 10;
 			obj.searchSetup.virtualGoalID	= 0;
             obj.nTimeSteps = 10;
 			obj.threatModel = [];
@@ -196,4 +165,5 @@ classdef ACEGridWorld
 		%------------------------------------------------------------------
 
 	end
+
 end
