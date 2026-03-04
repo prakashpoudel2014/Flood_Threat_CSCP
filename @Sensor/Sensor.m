@@ -35,23 +35,11 @@ Class definition of platform (actor and sensor motion).
 
 classdef Sensor < Platform
 	properties
-%         Position
-%         Velocity
-%         Heading
-%         actualPath
-%         expectedPath
-%         currentEdge
-%         totalExposure
-%         isSensor	
 
 		% Link to a grid world, threat, and sensor network
-% 		ACEGridWorld_
-%         threatModel_
-%         sensorNetwork_
-
+		
       edgeDistance
       c_path_integral
-%       travelDiatance
        
 	end
 
@@ -60,19 +48,9 @@ classdef Sensor < Platform
         function [obj, grid_, threat_] = Sensor(ID, speed, grid_, sensorNetwork_, threat_, sensor, time_step_)
             obj.actualPath = sensorNetwork_.configuration(ID);
             obj.Speed = speed;
-%             threat_			   = threat_.dynamics_discrete(time_step_);
- 
-%             measurementz_k      = threat_.calculate_at_sensor_locations( ...
-%                                   threat_.threatCoordinates(:, sensorNetwork_.configuration(ID))) ...                              
-%                                   + sqrt(sensorNetwork_.noiseVariance) * (randn(sensorNetwork_.nSensors, 1) - 0.5);
             measurementz_k      = threat_.calculate_at_sensor_locations( ...
                                   sensorNetwork_.configuration(ID), threat_.state) ...                              
                                   + sqrt(sensorNetwork_.noiseVariance) * (randn(sensorNetwork_.nSensors, 1) - 0.5);
-             measurementz_k      = [0 0];
-
-%             measurementz_k       =  threat_.calculate_at_locations( ...
-%                                           grid_.coordinates(:, sensorNetwork_.configuration(ID)) ) ...
-%                                           + sqrt(sensorNetwork_.noiseVariance) * (randn( sensorNetwork_.nSensors, 1)-0.5);
     
             if ID==1
                 sensorNetwork_.configuration = 40;
@@ -81,10 +59,9 @@ classdef Sensor < Platform
             end
 %              sensorNetwork_.configuration = 40;
             threat_              = threat_.estimate_state_UKF1(0, measurementz_k(ID), sensorNetwork_, grid_.optimalPath.loc);
-            % threat_.stateEstimateHistory(:,1) = threat_.stateEstimateHistory(:,2);
 
              sensorNetwork_.configuration = [40,6];
-%              sensorNetwork_.configuration = 40;
+%             sensorNetwork_.configuration = 40;
 
             grid_.threatModel    = threat_;
             grid_.sensorNetwork  = sensorNetwork_;
@@ -105,8 +82,7 @@ classdef Sensor < Platform
             else
                 sensorlocationslist(ismember(1:grid_.nPoints, [config, sensorNetwork_.configuration])) = [];
             end
-
-%             sensorlocationslist
+			
             sensorNetwork_.configuration = sensorNetwork_.configuration(ID);
 %                 network             = sensorNetwork_.configure_SMI_greedy_cost(threat_, sensorlocationslist, grid_);
                network		         = sensorNetwork_.configure_greedy_cost(threat_, sensorlocationslist, grid_,optimalPath_);
@@ -131,10 +107,6 @@ classdef Sensor < Platform
 
                     obj.travelDistance = 0;
                     obj.actualPath       = [obj.actualPath, obj.currentEdge(2)];
-%                     threat_			   = threat_.dynamics_discrete(time_step_);
-%                     measurementz_k       =  threat_.calculate_at_locations( ...
-%                                           grid_.coordinates(:, obj.currentEdge(2) )) ...
-%                                           + sqrt(SENSOR_NOISE_VAR) * (randn(1)-0.5);
                     measurementz_k =     threat_.calculate_at_sensor_locations( ...
                                            obj.currentEdge(2)) ...
                                           + sqrt(SENSOR_NOISE_VAR) * (randn(1) - 0.5);
@@ -157,10 +129,9 @@ classdef Sensor < Platform
                     end
                     sensorlocationslist(ismember(1:grid_.nPoints, config)) = [];
                     
-%                     sensorNetwork_.configuration = obj.actualPath(end);
-%                           sensorNetwork_ = sensorNetwork_.configure_SMI_greedy_cost(threat_, sensorlocationslist, grid_);
-                        sensorNetwork_ = sensorNetwork_.configure_greedy_cost(threat_, sensorlocationslist, grid_,optimalPath_);   
-%                        sensorNetwork_            = sensorNetwork_.configure_random( sensorlocationslist);
+%                     sensorNetwork_ = sensorNetwork_.configure_SMI_greedy_cost(threat_, sensorlocationslist, grid_);
+                    sensorNetwork_ = sensorNetwork_.configure_greedy_cost(threat_, sensorlocationslist, grid_,optimalPath_);   
+%                      sensorNetwork_            = sensorNetwork_.configure_random( sensorlocationslist);
                     x1 = threat_.threatCoordinates(1, obj.actualPath(end));
                     x2 = threat_.threatCoordinates(1, sensorNetwork_.configuration);
                     y1 = threat_.threatCoordinates(2, obj.actualPath(end));
@@ -178,4 +149,5 @@ classdef Sensor < Platform
             end
 
       end
+
  end
