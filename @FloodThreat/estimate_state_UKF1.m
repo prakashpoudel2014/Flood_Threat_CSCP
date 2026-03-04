@@ -33,8 +33,7 @@ An implementation of the Unscented Kalman Filter to estimate threat.
 %}
 
 function obj = estimate_state_UKF1(obj, time_step_, measurementz_k, sensors_, optimalPath)
-% 	estimate_state(stateEstimatex_km1, covarPxx_km1, measurementz_k, ...
-% 	stateModel, measurementModel, ESTIMATOR_PARAMETERS)
+
 
 %{
 INPUTS
@@ -157,18 +156,12 @@ KalmanGain =  Pxz * pinv(Pzz);
 %----- Correct (if measurement available)
 obj.stateEstimate	 = predx_kkm1 + KalmanGain * (measurementz_k - measz_kkm1);
 obj.stateEstimate(obj.stateEstimate < 0) = 0;
-% obj.stateEstimate = obj.normalizedStateEstimate;
-% n_points = length(obj.zMin);
-% obj.stateEstimate(1:n_points) = obj.normalizedStateEstimate(1:n_points) .* obj.zRange' + obj.zMin';
 obj.estimateCovarPxx = P_kkm1 - KalmanGain * Pzz * KalmanGain.';
 obj.originalStateEstimate = obj.stateEstimate(1:length(obj.originalState));
 obj.estimateError = (norm(obj.originalState) - norm(obj.originalStateEstimate))/norm(obj.originalState);
 
 %----- Trace of error covariance
 obj.traceCovarPxx = trace(obj.estimateCovarPxx);
-
-%----- Calculate mutual information between the state and measurement
-% obj.mutualinformation = 0.5 * log(det(P_kkm1)/(det(P_kkm1 - Pxz * pinv(Pzz) * Pxz')));
 
 %----- Update object histories
 obj.stateEstimateHistory	 = [obj.stateEstimateHistory		obj.stateEstimate];
@@ -232,5 +225,6 @@ end
 			repmat(x_a_km1, 1, nAugState) - gamma_sqrt_P_a];
 	end
 	%----------------------------------------------------------------------
+
 
 end
